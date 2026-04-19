@@ -7,122 +7,1222 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Sentinel-X">
-<meta name="theme-color" content="#000a14">
-<title>Sentinel-X</title>
+<meta name="theme-color" content="#0f1117">
+<title>Sentinel-X · النظام الاستباقي لحماية الأرواح</title>
+<link rel="manifest" href="manifest.json">
+
+<!-- ═══ SPLASH STYLES ═══ -->
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Tajawal:wght@300;400;700&display=swap');
-  *{margin:0;padding:0;box-sizing:border-box}
-  :root{--cyan:#00f5ff;--blue:#0066ff;--dark:#000a14}
-  html,body{width:100%;height:100%;background:var(--dark);overflow:hidden;font-family:'Tajawal',sans-serif}
-  body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,245,255,.04)1px,transparent 1px),linear-gradient(90deg,rgba(0,245,255,.04)1px,transparent 1px);background-size:40px 40px;animation:gridPulse 4s ease-in-out infinite;pointer-events:none}
-  body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 60% 50% at 50% 50%,rgba(0,102,255,.15)0%,transparent 70%);animation:glowPulse 2s ease-in-out infinite alternate;pointer-events:none}
-  @keyframes gridPulse{0%,100%{opacity:.5}50%{opacity:1}}
-  @keyframes glowPulse{0%{opacity:.5}100%{opacity:1}}
-  #splash{position:fixed;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;transition:opacity .9s ease,transform .9s ease}
-  #splash.hide{opacity:0;transform:scale(1.06);pointer-events:none}
-  .corner{position:absolute;width:22px;height:22px;border-color:rgba(0,245,255,.4);border-style:solid}
-  .corner-tl{top:22px;left:22px;border-width:2px 0 0 2px}
-  .corner-tr{top:22px;right:22px;border-width:2px 2px 0 0}
-  .corner-bl{bottom:22px;left:22px;border-width:0 0 2px 2px}
-  .corner-br{bottom:22px;right:22px;border-width:0 2px 2px 0}
-  .radar-ring{position:relative;width:210px;height:210px;display:flex;align-items:center;justify-content:center;z-index:1}
-  .ring{position:absolute;border-radius:50%;border:1px solid;animation:ringPulse 2s ease-in-out infinite}
-  .ring:nth-child(1){width:210px;height:210px;border-color:rgba(0,245,255,.12);animation-delay:0s}
-  .ring:nth-child(2){width:160px;height:160px;border-color:rgba(0,245,255,.22);animation-delay:.3s}
-  .ring:nth-child(3){width:110px;height:110px;border-color:rgba(0,245,255,.38);animation-delay:.6s}
-  @keyframes ringPulse{0%,100%{transform:scale(.95);opacity:.5}50%{transform:scale(1);opacity:1}}
-  .sweep{position:absolute;width:210px;height:210px;border-radius:50%;animation:rotateSweep 3s linear infinite;background:conic-gradient(from 0deg,rgba(0,245,255,0)0deg,rgba(0,245,255,.6)60deg,rgba(0,245,255,0)90deg)}
-  @keyframes rotateSweep{from{transform:rotate(0)}to{transform:rotate(360deg)}}
-  .shield-icon{position:relative;z-index:2;width:68px;height:68px}
-  .shield-icon svg{width:100%;height:100%;filter:drop-shadow(0 0 14px #00f5ffaa) drop-shadow(0 0 40px #00f5ff44)}
-  .logo-block{text-align:center;z-index:1}
-  .logo-name{font-family:'Orbitron',monospace;font-size:40px;font-weight:900;color:var(--cyan);text-shadow:0 0 20px #00f5ff88,0 0 60px #00f5ff33;letter-spacing:8px;animation:textFlicker 3s ease-in-out infinite}
-  @keyframes textFlicker{0%,100%{opacity:1}92%{opacity:1}93%{opacity:.6}94%{opacity:1}96%{opacity:.8}97%{opacity:1}}
-  .logo-sub{font-size:13px;font-weight:300;color:rgba(0,245,255,.55);letter-spacing:3px;margin-top:6px}
-  .version-badge{display:inline-flex;align-items:center;gap:8px;padding:4px 14px;margin-top:10px;border:1px solid rgba(0,245,255,.25);border-radius:20px;font-family:'Orbitron',monospace;font-size:9px;color:rgba(0,245,255,.45)}
-  .dot{width:6px;height:6px;border-radius:50%;background:#00ff88;box-shadow:0 0 8px #00ff88;animation:blink 1.5s ease-in-out infinite}
-  @keyframes blink{0%,100%{opacity:1}50%{opacity:.15}}
-  .progress-wrap{width:260px;z-index:1;display:flex;flex-direction:column;gap:8px}
-  .progress-label{display:flex;justify-content:space-between;font-family:'Orbitron',monospace;font-size:9px;color:rgba(0,245,255,.5);letter-spacing:1px}
-  .progress-bar{width:100%;height:2px;background:rgba(0,245,255,.1);border-radius:2px;overflow:hidden}
-  .progress-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--cyan));box-shadow:0 0 10px var(--cyan);border-radius:2px;width:0%;transition:width .08s linear}
-  .status-lines{z-index:1;display:flex;flex-direction:column;gap:5px;width:260px}
-  .status-line{display:flex;align-items:center;gap:10px;font-family:'Orbitron',monospace;font-size:9px;color:rgba(0,245,255,0);transition:color .3s ease}
-  .status-line.show{color:rgba(0,245,255,.42)}
-  .status-line::before{content:'▸';color:var(--cyan);opacity:0;transition:opacity .3s ease}
-  .status-line.show::before{opacity:1}
-  #redirect-notice{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);font-family:'Orbitron',monospace;font-size:9px;color:rgba(0,245,255,.3);letter-spacing:2px;z-index:11;opacity:0;transition:opacity .5s ease}
-  #redirect-notice.show{opacity:1}
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Tajawal:wght@300;400;500;700&display=swap');
+#splash-overlay{position:fixed;inset:0;z-index:99999;background:#000a14;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;transition:opacity 1s ease,transform 1s ease}
+#splash-overlay.hide{opacity:0;transform:scale(1.05);pointer-events:none}
+#splash-overlay::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(0,245,255,.04)1px,transparent 1px),linear-gradient(90deg,rgba(0,245,255,.04)1px,transparent 1px);background-size:40px 40px;animation:sp-grid 4s ease-in-out infinite}
+#splash-overlay::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 50% 50%,rgba(0,102,255,.14)0%,transparent 70%);animation:sp-glow 2s ease-in-out infinite alternate}
+@keyframes sp-grid{0%,100%{opacity:.5}50%{opacity:1}}
+@keyframes sp-glow{0%{opacity:.5}100%{opacity:1}}
+.sp-corner{position:absolute;width:22px;height:22px;border-color:rgba(0,245,255,.4);border-style:solid}
+.sp-corner.tl{top:22px;left:22px;border-width:2px 0 0 2px}
+.sp-corner.tr{top:22px;right:22px;border-width:2px 2px 0 0}
+.sp-corner.bl{bottom:22px;left:22px;border-width:0 0 2px 2px}
+.sp-corner.br{bottom:22px;right:22px;border-width:0 2px 2px 0}
+.sp-radar{position:relative;width:200px;height:200px;display:flex;align-items:center;justify-content:center;z-index:1}
+.sp-ring{position:absolute;border-radius:50%;border:1px solid;animation:sp-pulse 2s ease-in-out infinite}
+.sp-ring:nth-child(1){width:200px;height:200px;border-color:rgba(0,245,255,.12);animation-delay:0s}
+.sp-ring:nth-child(2){width:152px;height:152px;border-color:rgba(0,245,255,.22);animation-delay:.3s}
+.sp-ring:nth-child(3){width:104px;height:104px;border-color:rgba(0,245,255,.38);animation-delay:.6s}
+@keyframes sp-pulse{0%,100%{transform:scale(.95);opacity:.5}50%{transform:scale(1);opacity:1}}
+.sp-sweep{position:absolute;width:200px;height:200px;border-radius:50%;animation:sp-rotate 3s linear infinite;background:conic-gradient(from 0deg,rgba(0,245,255,0)0deg,rgba(0,245,255,.6)60deg,rgba(0,245,255,0)90deg)}
+@keyframes sp-rotate{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+.sp-shield{position:relative;z-index:2;width:64px;height:64px}
+.sp-shield svg{width:100%;height:100%;filter:drop-shadow(0 0 14px #00f5ffaa) drop-shadow(0 0 40px #00f5ff44)}
+.sp-logo{text-align:center;z-index:1}
+.sp-name{font-family:'Orbitron',monospace;font-size:38px;font-weight:900;color:#00f5ff;letter-spacing:8px;text-shadow:0 0 20px #00f5ff88,0 0 60px #00f5ff33;animation:sp-flicker 3s ease-in-out infinite}
+@keyframes sp-flicker{0%,100%{opacity:1}92%{opacity:1}93%{opacity:.6}94%{opacity:1}96%{opacity:.8}97%{opacity:1}}
+.sp-sub{font-family:'Tajawal',sans-serif;font-size:13px;font-weight:300;color:rgba(0,245,255,.55);letter-spacing:3px;margin-top:6px}
+.sp-badge{display:inline-flex;align-items:center;gap:8px;padding:4px 14px;margin-top:10px;border:1px solid rgba(0,245,255,.25);border-radius:20px;font-family:'Orbitron',monospace;font-size:9px;color:rgba(0,245,255,.45)}
+.sp-dot{width:6px;height:6px;border-radius:50%;background:#00ff88;box-shadow:0 0 8px #00ff88;animation:sp-blink 1.5s ease-in-out infinite}
+@keyframes sp-blink{0%,100%{opacity:1}50%{opacity:.15}}
+.sp-bar-wrap{width:260px;z-index:1;display:flex;flex-direction:column;gap:8px}
+.sp-bar-lbl{display:flex;justify-content:space-between;font-family:'Orbitron',monospace;font-size:9px;color:rgba(0,245,255,.5);letter-spacing:1px}
+.sp-bar-track{width:100%;height:2px;background:rgba(0,245,255,.1);border-radius:2px;overflow:hidden}
+.sp-bar-fill{height:100%;background:linear-gradient(90deg,#0066ff,#00f5ff);box-shadow:0 0 10px #00f5ff;border-radius:2px;width:0%;transition:width .08s linear}
+.sp-lines{z-index:1;display:flex;flex-direction:column;gap:5px;width:260px}
+.sp-line{display:flex;align-items:center;gap:10px;font-family:'Orbitron',monospace;font-size:9px;color:rgba(0,245,255,0);transition:color .3s ease}
+.sp-line.on{color:rgba(0,245,255,.42)}
+.sp-line::before{content:'▸';color:#00f5ff;opacity:0;transition:opacity .3s ease}
+.sp-line.on::before{opacity:1}
+#main-app{opacity:0;transition:opacity .8s ease}
+#main-app.show{opacity:1}
+</style>
+
+<!-- ═══ APP STYLES ═══ -->
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0f1117;--bg2:#161b27;--bg3:#1e2535;--bg4:#252d40;
+  --border:#ffffff14;--border2:#ffffff22;
+  --text:#e8eaf0;--text2:#8b93a8;--text3:#4a5268;
+  --green:#1aba82;--green-dim:#0f6e56;
+  --red:#e05252;--red-dim:#7a2323;
+  --amber:#e09a2a;--amber-dim:#7a5210;
+  --blue:#4a90d9;--blue-dim:#1a3d6e;
+  --cyan:#00c8ff;--cyan-dim:#003d52;
+  --purple:#8b5cf6;--purple-dim:#3b1f6e;
+  --accent:#1aba82;
+  --font:'Tajawal',sans-serif;
+}
+html,body{width:100%;height:100%;overflow:hidden}
+body{background:var(--bg);font-family:var(--font);direction:rtl;color:var(--text)}
+.app{display:flex;height:100vh;overflow:hidden}
+
+/* ─── SIDEBAR ─── */
+.sidebar{width:220px;flex-shrink:0;background:var(--bg2);border-left:0.5px solid var(--border);display:flex;flex-direction:column;padding:0;overflow-y:auto}
+.sidebar-logo{padding:18px 16px 14px;border-bottom:0.5px solid var(--border)}
+.logo-mark{display:flex;align-items:center;gap:10px;margin-bottom:4px}
+.logo-hex{width:36px;height:36px;background:var(--green-dim);border:1px solid var(--green);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.logo-hex svg{width:18px;height:18px;stroke:var(--green);fill:none;stroke-width:1.8;stroke-linecap:round}
+.logo-name{font-size:15px;font-weight:500;color:var(--text)}
+.logo-tagline{font-size:10px;color:var(--text3);padding-right:46px}
+.sidebar-status{margin:10px 14px;padding:8px 12px;background:var(--bg3);border:0.5px solid var(--green);border-radius:8px;display:flex;align-items:center;gap:8px;cursor:pointer;transition:all .2s}
+.sidebar-status:hover{background:var(--bg4)}
+.status-dot{width:8px;height:8px;border-radius:50%;background:var(--green);flex-shrink:0;transition:background .3s}
+.status-dot.pulse{animation:dotPulse 1.5s ease-in-out infinite}
+@keyframes dotPulse{0%,100%{box-shadow:0 0 0 0 rgba(26,186,130,.6)}50%{box-shadow:0 0 0 6px rgba(26,186,130,0)}}
+.status-dot.danger{background:var(--red);animation:dotPulse-red 1s ease-in-out infinite}
+@keyframes dotPulse-red{0%,100%{box-shadow:0 0 0 0 rgba(224,82,82,.7)}50%{box-shadow:0 0 0 6px rgba(224,82,82,0)}}
+.status-label{font-size:12px;color:var(--green);font-weight:500}
+.status-label.danger{color:var(--red)}
+.sidebar-nav{flex:1;padding:6px 0}
+.nav-section{font-size:10px;color:var(--text3);padding:10px 16px 4px;letter-spacing:.06em;font-weight:500}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 16px;cursor:pointer;border-right:3px solid transparent;transition:all .15s;font-size:13px;color:var(--text2)}
+.nav-item:hover{background:var(--bg3);color:var(--text)}
+.nav-item.active{background:var(--bg3);color:var(--green);border-right-color:var(--green)}
+.nav-icon{width:16px;height:16px;flex-shrink:0;opacity:.7}
+.nav-item.active .nav-icon{opacity:1}
+.nav-badge{margin-right:auto;background:var(--red-dim);color:var(--red);font-size:10px;padding:2px 6px;border-radius:10px;border:0.5px solid var(--red)}
+.sidebar-footer{padding:10px 14px;border-top:0.5px solid var(--border)}
+.footer-time{font-size:11px;color:var(--text3);margin-bottom:4px;font-variant-numeric:tabular-nums}
+.footer-version{font-size:10px;color:var(--text3)}
+
+/* ─── MAIN ─── */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+.topbar{padding:12px 20px;border-bottom:0.5px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--bg2);flex-shrink:0}
+.page-title{font-size:15px;font-weight:500;color:var(--text)}
+.page-sub{font-size:11px;color:var(--text3);margin-top:2px}
+.topbar-actions{display:flex;gap:8px;flex-wrap:wrap}
+.tbtn{padding:6px 12px;border-radius:7px;border:0.5px solid var(--border2);background:var(--bg3);font-size:12px;color:var(--text2);cursor:pointer;transition:all .15s;font-family:var(--font)}
+.tbtn:hover{background:var(--bg4);color:var(--text)}
+.tbtn.primary{background:var(--green-dim);border-color:var(--green);color:var(--green)}
+.tbtn.danger{background:var(--red-dim);border-color:var(--red);color:var(--red)}
+.tbtn.mode-btn{font-size:11px;padding:5px 10px}
+.tbtn.mode-btn.active-mode{background:var(--blue-dim);border-color:var(--blue);color:var(--blue)}
+
+/* ─── PAGES ─── */
+.page{display:none;flex:1;overflow-y:auto;padding:16px 20px}
+.page.active{display:block}
+
+/* ─── ALERT BANNER ─── */
+.alert-bar{display:none;align-items:center;gap:12px;padding:10px 16px;background:#2a1a1a;border:0.5px solid var(--red);border-radius:10px;margin-bottom:14px;animation:alertSlide .3s ease}
+.alert-bar.show{display:flex}
+@keyframes alertSlide{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+.alert-icon{width:28px;height:28px;background:var(--red-dim);border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.alert-icon svg{width:14px;height:14px;stroke:var(--red);fill:none;stroke-width:2;stroke-linecap:round}
+.alert-msg{flex:1;font-size:12px;color:#e8a0a0}
+.alert-tag{font-size:10px;color:var(--red);background:var(--red-dim);padding:3px 8px;border-radius:8px;border:0.5px solid var(--red)}
+
+/* ─── METRIC CARDS ─── */
+.metrics-row{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;margin-bottom:14px}
+.metric-card{background:var(--bg2);border:0.5px solid var(--border);border-radius:10px;padding:12px 14px;position:relative;overflow:hidden;transition:border-color .3s}
+.metric-card.warn{border-color:var(--amber)}
+.metric-card.danger{border-color:var(--red)}
+.m-label{font-size:10px;color:var(--text3);margin-bottom:5px;letter-spacing:.04em}
+.m-val{font-size:22px;font-weight:500;line-height:1;color:var(--text);font-variant-numeric:tabular-nums;transition:color .3s}
+.m-val.safe{color:var(--green)}
+.m-val.warn{color:var(--amber)}
+.m-val.danger{color:var(--red)}
+.m-unit{font-size:10px;color:var(--text3);margin-top:2px}
+.m-bar{height:3px;background:var(--bg4);border-radius:2px;margin-top:8px;overflow:hidden}
+.m-bar-fill{height:100%;border-radius:2px;transition:width .6s ease,background .3s}
+.fill-safe{background:var(--green)}
+.fill-warn{background:var(--amber)}
+.fill-danger{background:var(--red)}
+.fill-cyan{background:var(--cyan)}
+.fill-purple{background:var(--purple)}
+.m-trend{font-size:9px;color:var(--text3);margin-top:3px}
+
+/* ─── GRID LAYOUTS ─── */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.three-col{display:grid;grid-template-columns:2fr 1fr;gap:14px;margin-bottom:14px}
+.four-col{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+
+/* ─── CARDS ─── */
+.card{background:var(--bg2);border:0.5px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:0}
+.card-title{font-size:11px;color:var(--text3);letter-spacing:.05em;font-weight:500;margin-bottom:10px;display:flex;align-items:center;gap:6px;justify-content:space-between}
+.card-title-left{display:flex;align-items:center;gap:6px}
+.card-badge{font-size:9px;padding:2px 7px;border-radius:8px;font-weight:500}
+.cb-green{background:var(--green-dim);color:var(--green);border:0.5px solid var(--green)}
+.cb-amber{background:var(--amber-dim);color:var(--amber);border:0.5px solid var(--amber)}
+.cb-red{background:var(--red-dim);color:var(--red);border:0.5px solid var(--red)}
+.cb-blue{background:var(--blue-dim);color:var(--blue);border:0.5px solid var(--blue)}
+.cb-cyan{background:var(--cyan-dim);color:var(--cyan);border:0.5px solid var(--cyan)}
+
+/* ─── LIFE GRID ─── */
+.life-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0}
+.life-cell{text-align:center;padding:10px 4px;border-left:0.5px solid var(--border)}
+.life-cell:last-child{border-left:none}
+.life-icon-wrap{width:32px;height:32px;border-radius:8px;margin:0 auto 6px;display:flex;align-items:center;justify-content:center}
+.li-green{background:#0f6e5640;border:0.5px solid var(--green-dim)}
+.li-blue{background:#1a3d6e40;border:0.5px solid var(--blue-dim)}
+.li-amber{background:#7a521040;border:0.5px solid var(--amber-dim)}
+.li-cyan{background:#003d5240;border:0.5px solid var(--cyan-dim)}
+.li-num{font-size:20px;font-weight:500;color:var(--text);font-variant-numeric:tabular-nums}
+.li-lbl{font-size:10px;color:var(--text3);margin-top:2px}
+
+/* ─── SENSORS ─── */
+.sensor-row{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:0.5px solid var(--border)}
+.sensor-row:last-child{border-bottom:none}
+.s-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;transition:background .3s}
+.s-dot.safe{background:var(--green)}
+.s-dot.warn{background:var(--amber)}
+.s-dot.danger{background:var(--red)}
+.s-dot.offline{background:var(--text3)}
+.s-name{flex:1;font-size:12px;color:var(--text2)}
+.s-val{font-size:12px;font-weight:500;color:var(--text3);transition:color .3s}
+.s-val.safe{color:var(--green)}
+.s-val.danger{color:var(--red)}
+.s-val.warn{color:var(--amber)}
+.s-sub{font-size:9px;color:var(--text3);margin-top:1px}
+
+/* ─── SMELL ─── */
+.smell-row{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:0.5px solid var(--border)}
+.smell-row:last-child{border-bottom:none}
+.smell-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.smell-name{flex:1;font-size:12px;color:var(--text2)}
+.smell-badge{font-size:10px;padding:2px 7px;border-radius:8px;font-weight:500}
+.sb-safe{background:#0f6e5640;color:var(--green);border:0.5px solid var(--green-dim)}
+.sb-warn{background:#7a521040;color:var(--amber);border:0.5px solid var(--amber-dim)}
+.sb-danger{background:#7a232340;color:var(--red);border:0.5px solid var(--red-dim)}
+
+/* ─── PREDICT ─── */
+.predict-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.predict-row:last-child{margin-bottom:0}
+.p-label{font-size:11px;color:var(--text2);width:90px;flex-shrink:0;text-align:right}
+.p-track{flex:1;height:4px;background:var(--bg4);border-radius:2px;overflow:hidden}
+.p-fill{height:100%;border-radius:2px;transition:width 1s ease}
+.p-pct{font-size:11px;color:var(--text3);width:28px;text-align:left;font-variant-numeric:tabular-nums}
+
+/* ─── TWIN SVG ─── */
+.twin-svg{width:100%;border-radius:8px;overflow:hidden}
+.evac-path{stroke-dasharray:8 4;stroke-dashoffset:0;animation:evacAnim 1.5s linear infinite;display:none}
+.evac-path.show{display:block}
+@keyframes evacAnim{to{stroke-dashoffset:-24}}
+
+/* ─── TOGGLES ─── */
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:0.5px solid var(--border);font-size:12px;color:var(--text2)}
+.toggle-row:last-child{border-bottom:none}
+.tog{position:relative;width:32px;height:18px;cursor:pointer;flex-shrink:0}
+.tog input{opacity:0;position:absolute;width:0;height:0}
+.tog-track{position:absolute;inset:0;background:var(--bg4);border-radius:9px;transition:.2s;border:0.5px solid var(--border2)}
+.tog-track:before{content:'';position:absolute;width:12px;height:12px;top:2px;right:2px;background:var(--text3);border-radius:50%;transition:.2s}
+input:checked+.tog-track{background:var(--green-dim);border-color:var(--green)}
+input:checked+.tog-track:before{background:var(--green);transform:translateX(-14px)}
+
+/* ─── CTRL ─── */
+.ctrl-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.ctrl-btn{padding:10px 6px;background:var(--bg3);border:0.5px solid var(--border);border-radius:8px;cursor:pointer;text-align:center;transition:all .15s;color:var(--text2);font-family:var(--font)}
+.ctrl-btn:hover{background:var(--bg4);border-color:var(--border2);color:var(--text)}
+.ctrl-btn.active{background:#0f6e5640;border-color:var(--green);color:var(--green)}
+.ctrl-btn.active-r{background:var(--red-dim);border-color:var(--red);color:var(--red)}
+.ctrl-btn-icon{width:20px;height:20px;margin:0 auto 4px;display:flex;align-items:center;justify-content:center}
+.ctrl-btn-icon svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.ctrl-btn-label{font-size:11px;font-weight:500}
+.sim-btn{width:100%;padding:11px;background:var(--red-dim);border:0.5px solid var(--red);border-radius:8px;color:var(--red);font-size:12px;font-weight:500;cursor:pointer;transition:all .2s;font-family:var(--font)}
+.sim-btn:hover{background:#5a1a1a}
+
+/* ─── CHART AREA ─── */
+.chart-wrap{position:relative;height:140px;width:100%;margin-top:8px}
+canvas.mini-chart{width:100%!important;height:140px!important}
+
+/* ─── LOG PAGE ─── */
+.log-filters{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.log-filter-btn{padding:5px 12px;border-radius:20px;border:0.5px solid var(--border2);background:var(--bg3);font-size:11px;color:var(--text2);cursor:pointer;font-family:var(--font);transition:all .15s}
+.log-filter-btn.active{background:var(--green-dim);border-color:var(--green);color:var(--green)}
+.log-entry{display:flex;align-items:flex-start;gap:12px;padding:12px 14px;border-bottom:0.5px solid var(--border);transition:background .15s}
+.log-entry:hover{background:var(--bg3)}
+.log-entry:last-child{border-bottom:none}
+.log-icon{width:30px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.log-icon svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round}
+.li-r{background:var(--red-dim);color:var(--red)}
+.li-a{background:var(--amber-dim);color:var(--amber)}
+.li-g{background:var(--green-dim);color:var(--green)}
+.li-b{background:var(--blue-dim);color:var(--blue)}
+.log-body{flex:1}
+.log-title{font-size:13px;color:var(--text);margin-bottom:2px}
+.log-time{font-size:11px;color:var(--text3)}
+.log-tag{font-size:10px;padding:2px 7px;border-radius:8px;border:0.5px solid}
+
+/* ─── CONTACTS ─── */
+.contact-card{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:0.5px solid var(--border)}
+.contact-card:last-child{border-bottom:none}
+.contact-avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;flex-shrink:0}
+.ca-green{background:var(--green-dim);color:var(--green);border:1px solid var(--green)}
+.ca-red{background:var(--red-dim);color:var(--red);border:1px solid var(--red)}
+.ca-blue{background:var(--blue-dim);color:var(--blue);border:1px solid var(--blue)}
+.ca-amber{background:var(--amber-dim);color:var(--amber);border:1px solid var(--amber)}
+.contact-info{flex:1}
+.contact-name{font-size:13px;color:var(--text);margin-bottom:2px}
+.contact-role{font-size:11px;color:var(--text3)}
+.contact-call{padding:6px 12px;border-radius:7px;border:0.5px solid var(--green);background:var(--green-dim);color:var(--green);font-size:11px;cursor:pointer;font-family:var(--font);transition:all .15s}
+.contact-call:hover{background:var(--green);color:#000}
+
+/* ─── CHATBOT ─── */
+.chat-messages{height:280px;overflow-y:auto;display:flex;flex-direction:column;gap:10px;padding:4px 0 10px;scroll-behavior:smooth}
+.chat-bubble{max-width:85%;padding:10px 13px;border-radius:10px;font-size:12px;line-height:1.6}
+.chat-bubble.user{background:var(--blue-dim);border:0.5px solid var(--blue);color:var(--text);align-self:flex-start;border-radius:10px 10px 3px 10px}
+.chat-bubble.ai{background:var(--bg3);border:0.5px solid var(--border2);color:var(--text);align-self:flex-end;border-radius:10px 10px 10px 3px}
+.chat-bubble.typing{opacity:.6}
+.chat-input-row{display:flex;gap:8px;margin-top:10px}
+.chat-input{flex:1;padding:9px 12px;background:var(--bg3);border:0.5px solid var(--border2);border-radius:8px;color:var(--text);font-family:var(--font);font-size:12px;outline:none}
+.chat-input:focus{border-color:var(--blue)}
+.chat-send{padding:9px 14px;background:var(--blue-dim);border:0.5px solid var(--blue);border-radius:8px;color:var(--blue);cursor:pointer;font-family:var(--font);font-size:12px;transition:all .15s}
+.chat-send:hover{background:var(--blue);color:#fff}
+
+/* ─── CALIBRATION ─── */
+.calib-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:0.5px solid var(--border)}
+.calib-row:last-child{border-bottom:none}
+.calib-bar{flex:1;height:4px;background:var(--bg4);border-radius:2px;overflow:hidden}
+.calib-fill{height:100%;border-radius:2px}
+.calib-date{font-size:10px;color:var(--text3)}
+
+/* ─── MODES ─── */
+.mode-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px}
+.mode-card{padding:12px 8px;background:var(--bg3);border:0.5px solid var(--border);border-radius:10px;text-align:center;cursor:pointer;transition:all .2s}
+.mode-card:hover{background:var(--bg4)}
+.mode-card.selected{border-color:var(--green);background:#0f6e5620}
+.mode-icon{font-size:22px;margin-bottom:6px}
+.mode-name{font-size:12px;font-weight:500;color:var(--text);margin-bottom:2px}
+.mode-desc{font-size:10px;color:var(--text3)}
+
+/* ─── REPORT PAGE ─── */
+.report-stat{text-align:center;padding:14px;background:var(--bg3);border-radius:10px;border:0.5px solid var(--border)}
+.report-num{font-size:28px;font-weight:500;color:var(--text);font-variant-numeric:tabular-nums}
+.report-lbl{font-size:11px;color:var(--text3);margin-top:4px}
+
+/* ─── NOTIFICATION TOAST ─── */
+#toast-container{position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:9998;display:flex;flex-direction:column;gap:8px;pointer-events:none;width:360px}
+.toast{padding:12px 16px;border-radius:10px;font-size:12px;color:var(--text);display:flex;align-items:center;gap:10px;animation:toastIn .3s ease;pointer-events:all;border:0.5px solid}
+.toast.danger{background:#2a1010;border-color:var(--red)}
+.toast.warn{background:#2a1f0a;border-color:var(--amber)}
+.toast.info{background:#0a1a2a;border-color:var(--blue)}
+.toast.success{background:#0a1f18;border-color:var(--green)}
+@keyframes toastIn{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:translateY(0)}}
+.toast-icon{font-size:16px;flex-shrink:0}
+.toast-body{flex:1}
+.toast-title{font-weight:500;margin-bottom:1px}
+.toast-msg{color:var(--text2);font-size:11px}
+.toast-close{cursor:pointer;opacity:.5;font-size:14px;flex-shrink:0}
+.toast-close:hover{opacity:1}
 </style>
 </head>
 <body>
-<div id="splash">
-  <div class="corner corner-tl"></div>
-  <div class="corner corner-tr"></div>
-  <div class="corner corner-bl"></div>
-  <div class="corner corner-br"></div>
-  <div class="radar-ring">
-    <div class="ring"></div>
-    <div class="ring"></div>
-    <div class="ring"></div>
-    <div class="sweep"></div>
-    <div class="shield-icon">
-      <svg viewBox="0 0 100 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M50 5 L90 22 L90 55 C90 80 70 105 50 115 C30 105 10 80 10 55 L10 22 Z" fill="rgba(0,245,255,0.07)" stroke="rgba(0,245,255,0.8)" stroke-width="2.5"/>
+
+<!-- ═══ SPLASH ═══ -->
+<div id="splash-overlay">
+  <div class="sp-corner tl"></div><div class="sp-corner tr"></div>
+  <div class="sp-corner bl"></div><div class="sp-corner br"></div>
+  <div class="sp-radar">
+    <div class="sp-ring"></div><div class="sp-ring"></div><div class="sp-ring"></div>
+    <div class="sp-sweep"></div>
+    <div class="sp-shield">
+      <svg viewBox="0 0 100 120" fill="none">
+        <path d="M50 5 L90 22 L90 55 C90 80 70 105 50 115 C30 105 10 80 10 55 L10 22 Z" fill="rgba(0,245,255,0.07)" stroke="rgba(0,245,255,0.85)" stroke-width="2.5"/>
         <path d="M50 20 L78 33 L78 57 C78 75 65 93 50 101 C35 93 22 75 22 57 L22 33 Z" fill="rgba(0,102,255,0.1)" stroke="rgba(0,245,255,0.35)" stroke-width="1.5"/>
         <path d="M35 58 L45 68 L68 45" stroke="#00f5ff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
     </div>
   </div>
-  <div class="logo-block">
-    <div class="logo-name">SENTINEL</div>
-    <div class="logo-sub">النظام الاستباقي لحماية الأرواح</div>
-    <div class="version-badge"><span class="dot"></span>v2.4.1 · ESP32-S3</div>
+  <div class="sp-logo">
+    <div class="sp-name">SENTINEL</div>
+    <div class="sp-sub">النظام الاستباقي لحماية الأرواح</div>
+    <div class="sp-badge"><span class="sp-dot"></span>v3.0.0 · ESP32-S3</div>
   </div>
-  <div class="progress-wrap">
-    <div class="progress-label">
-      <span id="status-text">تهيئة النظام...</span>
-      <span id="pct">0%</span>
-    </div>
-    <div class="progress-bar"><div class="progress-fill" id="fill"></div></div>
+  <div class="sp-bar-wrap">
+    <div class="sp-bar-lbl"><span id="sp-status">تهيئة النظام...</span><span id="sp-pct">0%</span></div>
+    <div class="sp-bar-track"><div class="sp-bar-fill" id="sp-fill"></div></div>
   </div>
-  <div class="status-lines">
-    <div class="status-line" id="s0">LOADING CORE MODULES</div>
-    <div class="status-line" id="s1">CONNECTING ESP32-S3</div>
-    <div class="status-line" id="s2">INITIALIZING mmWave RADAR</div>
-    <div class="status-line" id="s3">AI NOSE CALIBRATION</div>
-    <div class="status-line" id="s4">SYSTEM READY · النظام آمن ✓</div>
+  <div class="sp-lines">
+    <div class="sp-line" id="sl0">LOADING CORE MODULES</div>
+    <div class="sp-line" id="sl1">CONNECTING ESP32-S3</div>
+    <div class="sp-line" id="sl2">INITIALIZING mmWave RADAR</div>
+    <div class="sp-line" id="sl3">AI NOSE + CO₂ CALIBRATION</div>
+    <div class="sp-line" id="sl4">SYSTEM READY · النظام آمن ✓</div>
   </div>
 </div>
-<div id="redirect-notice">LAUNCHING SENTINEL-X...</div>
+
+<!-- ═══ TOAST ═══ -->
+<div id="toast-container"></div>
+
+<!-- ═══ MAIN APP ═══ -->
+<div id="main-app">
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-mark">
+        <div class="logo-hex"><svg viewBox="0 0 18 18"><path d="M9 2L14 6V12L9 16L4 12V6L9 2Z"/><circle cx="9" cy="9" r="2.5"/></svg></div>
+        <div><div class="logo-name">Sentinel-X</div></div>
+      </div>
+      <div class="logo-tagline">النظام الاستباقي لحماية الأرواح</div>
+    </div>
+    <div class="sidebar-status" id="sb-status" onclick="triggerAlert()">
+      <div class="status-dot pulse" id="sb-dot"></div>
+      <div class="status-label" id="sb-label">النظام آمن</div>
+    </div>
+    <div class="sidebar-nav">
+      <div class="nav-section">الرئيسية</div>
+      <div class="nav-item active" onclick="showPage('dashboard',this)">
+        <svg class="nav-icon" viewBox="0 0 16 16" stroke="currentColor" fill="none" stroke-width="1.5" stroke-linecap="round"><rect x="1" y="1" width="6" height="6" rx="1.5"/><rect x="9" y="1" width="6" height="6" rx="1.5"/><rect x="1" y="9" width="6" height="6" rx="1.5"/><rect x="9" y="9" width="6" height="6" rx="1.5"/></svg>
+        لوحة المراقبة
+      </div>
+      <div class="nav-item" onclick="showPage('lives',this)">
+        <svg class="nav-icon" viewBox="0 0 16 16" stroke="currentColor" fill="none" stroke-width="1.5" stroke-linecap="round"><circle cx="6" cy="4" r="2.5"/><path d="M1 13c0-3 2.2-5 5-5s5 2 5 5"/><circle cx="12" cy="6" r="2"/><path d="M11 13c0-2 1.5-3.5 3.5-3.5"/></svg>
+        إحصاء الأرواح
+      </div>
+      <div class="nav-item" onclick="showPage('twin',this)">
+        <svg class="nav-icon" viewBox="0 0 16 16" stroke="currentColor" fill="none" stroke-width="1.5" stroke-linecap="round"><path d="M2 5l6-3 6 3v6l-6 3-6-3V5z"/><path d="M8 2v12M2 5l6 3 6-3"/></svg>
+        التوأم الرقمي
+      </div>
+      <div class="nav-section">التحليل</div>
+      <div class="nav-item" onclick="showPage('nose',this)">
+        <svg class="nav-icon" viewBox="0 0 16 16" stroke="currentColor" fill="none" stroke-width="1.5" stroke-linecap="round"><ellipse cx="8" cy="7" rx="3.5" ry="4"/><path d="M4.5 10.5c-1.5 1-2 3.5 1.5 3.5h4c3.5 0 3-2.5 1.5-3.5"/></svg>
+        الأنف الرقمي
+      </div>
+      <div class="nav-item" onclick="showPage('predict',this)">
+        <svg class="nav-icon" viewBox="0 0 16 16" stroke="currentColor" fill="none" stroke-width="1.5" stroke-linecap="round"><polyline points="1,12 5,7 8,9 12,4 15,6"/><path d="M12 4h3v3"/></svg>
+        التحليل التنبؤي
+      </div>
+      <div class="nav-item" onclick="showPage('history',this)">
+        <svg class="nav-icon" viewBox="0 0 16 16" stroke="currentColor" fill="none" stroke-width="1.5" stroke-linecap="round"><rect x="1" y="5" width="14" height="10" rx="2"/><path d="M5 5V3a3 3 0 016 0v2"/><path d="M4 10h2M7 10h5"/></svg>
+        السجل التاريخي
+      </div>
+      <div class="nav-section">التحكم</div>
+      <div class="nav-item" onclick="showPage('control',this)">
+        <svg class="nav-icon" viewBox="0 0 16 16" stroke="currentColor" fill="none" stroke-width="1.5" stroke-linecap="round"><circle cx="8" cy="8" r="2.5"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.2 3.2l1.4 1.4M11.4 11.4l1.4 1.4M3.2 12.8l1.4-1.4M11.4 4.6l1.4-1.4"/></svg>
+        الاستجابة الآلية
+      </div>
+      <div class="nav-item" onclick="showPage('log',this)">
+        <svg class="nav-icon" viewBox="0 0 16 16" stroke="currentColor" fill="none" stroke-width="1.5" stroke-linecap="round"><path d="M3 2h10a1 1 0 011 1v10a1 1 0 01-1 1H3a1 1 0 01-1-1V3a1 1 0 011-1z"/><path d="M5 6h6M5 9h4M5 12h3"/></svg>
+        سجل الأحداث
+        <span class="nav-badge" id="log-badge">7</span>
+      </div>
+      <div class="nav-section">خدمات</div>
+      <div class="nav-item" onclick="showPage('ai',this)">
+        <svg class="nav-icon" viewBox="0 0 16 16" stroke="currentColor" fill="none" stroke-width="1.5" stroke-linecap="round"><rect x="2" y="4" width="12" height="9" rx="2"/><path d="M6 4V2M10 4V2M5 9l1.5 1.5L9 7"/></svg>
+        مساعد AI
+      </div>
+      <div class="nav-item" onclick="showPage('contacts',this)">
+        <svg class="nav-icon" viewBox="0 0 16 16" stroke="currentColor" fill="none" stroke-width="1.5" stroke-linecap="round"><circle cx="7" cy="5" r="3"/><path d="M1 14c0-3.3 2.7-6 6-6"/><path d="M12 10v5M9.5 12.5h5"/></svg>
+        جهات الاتصال
+      </div>
+      <div class="nav-item" onclick="showPage('report',this)">
+        <svg class="nav-icon" viewBox="0 0 16 16" stroke="currentColor" fill="none" stroke-width="1.5" stroke-linecap="round"><path d="M4 2h8l2 3v9a1 1 0 01-1 1H3a1 1 0 01-1-1V3a1 1 0 011-1z"/><path d="M5 8h6M5 11h4"/><path d="M8 2v3h4"/></svg>
+        التقارير
+      </div>
+      <div class="nav-item" onclick="showPage('settings',this)">
+        <svg class="nav-icon" viewBox="0 0 16 16" stroke="currentColor" fill="none" stroke-width="1.5" stroke-linecap="round"><path d="M6.5 1.5l-.7 1.8a5 5 0 00-1.4.8L2.6 3.5l-1.5 2.6 1.4 1.3a5 5 0 000 1.6l-1.4 1.3L2.6 12l1.8-.6a5 5 0 001.4.8l.7 1.8h3l.7-1.8a5 5 0 001.4-.8l1.8.6 1.5-2.6-1.4-1.3a5 5 0 000-1.6l1.4-1.3L13.4 3.5l-1.8.6a5 5 0 00-1.4-.8L9.5 1.5h-3z"/><circle cx="8" cy="8" r="2"/></svg>
+        الإعدادات
+      </div>
+    </div>
+    <div class="sidebar-footer">
+      <div class="footer-time" id="sb-time">—</div>
+      <div class="footer-version">v3.0.0 · ESP32-S3 · متصل</div>
+    </div>
+  </div>
+
+  <!-- MAIN AREA -->
+  <div class="main">
+    <div class="topbar">
+      <div>
+        <div class="page-title" id="page-title">لوحة المراقبة</div>
+        <div class="page-sub">تحديث لحظي · آخر فحص: <span id="last-scan">0</span> ثانية</div>
+      </div>
+      <div class="topbar-actions">
+        <button class="tbtn mode-btn" id="mode-indicator" onclick="showPage('settings',null)">🌙 وضع عادي</button>
+        <button class="tbtn" onclick="triggerAlert()">محاكاة خطر</button>
+        <button class="tbtn primary" onclick="sendSOS()">🆘 استغاثة</button>
+      </div>
+    </div>
+
+    <!-- ══ PAGE: DASHBOARD ══ -->
+    <div class="page active" id="page-dashboard">
+      <div class="alert-bar" id="alert-bar">
+        <div class="alert-icon"><svg viewBox="0 0 14 14"><path d="M7 3v5M7 10v1"/><path d="M1 12L7 2l6 10H1z"/></svg></div>
+        <div class="alert-msg" id="alert-msg">تسرب غاز في المطبخ — تم إغلاق الصمام تلقائياً · رادار يرصد 6 أرواح</div>
+        <div class="alert-tag">خطر</div>
+      </div>
+
+      <!-- 6 metric cards -->
+      <div class="metrics-row">
+        <div class="card metric-card" id="mc-gas">
+          <div class="m-label">تركيز الغاز</div>
+          <div class="m-val safe" id="gas-v">0.3</div>
+          <div class="m-unit">% LEL</div>
+          <div class="m-bar"><div class="m-bar-fill fill-safe" id="gas-b" style="width:3%"></div></div>
+          <div class="m-trend" id="gas-trend">↔ مستقر</div>
+        </div>
+        <div class="card metric-card" id="mc-temp">
+          <div class="m-label">درجة الحرارة</div>
+          <div class="m-val" id="temp-v">24</div>
+          <div class="m-unit">°م</div>
+          <div class="m-bar"><div class="m-bar-fill fill-safe" id="temp-b" style="width:24%"></div></div>
+          <div class="m-trend" id="temp-trend">↔ مستقر</div>
+        </div>
+        <div class="card metric-card">
+          <div class="m-label">الرطوبة</div>
+          <div class="m-val" id="hum-v">42</div>
+          <div class="m-unit">%</div>
+          <div class="m-bar"><div class="m-bar-fill fill-safe" id="hum-b" style="width:42%"></div></div>
+          <div class="m-trend">↔ مستقر</div>
+        </div>
+        <div class="card metric-card" id="mc-smoke">
+          <div class="m-label">الدخان</div>
+          <div class="m-val safe" id="smoke-v">0</div>
+          <div class="m-unit">ppm</div>
+          <div class="m-bar"><div class="m-bar-fill fill-safe" id="smoke-b" style="width:1%"></div></div>
+          <div class="m-trend">↔ مستقر</div>
+        </div>
+        <div class="card metric-card" id="mc-co2">
+          <div class="m-label">CO₂</div>
+          <div class="m-val safe" id="co2-v">412</div>
+          <div class="m-unit">ppm</div>
+          <div class="m-bar"><div class="m-bar-fill fill-cyan" id="co2-b" style="width:18%"></div></div>
+          <div class="m-trend">↔ طبيعي</div>
+        </div>
+        <div class="card metric-card" id="mc-co">
+          <div class="m-label">CO</div>
+          <div class="m-val safe" id="co-v">0.2</div>
+          <div class="m-unit">ppm</div>
+          <div class="m-bar"><div class="m-bar-fill fill-purple" id="co-b" style="width:2%"></div></div>
+          <div class="m-trend">↔ آمن</div>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <!-- Life count -->
+        <div class="card">
+          <div class="card-title">
+            <div class="card-title-left">إحصاء الأرواح</div>
+            <span class="card-badge cb-green">رادار نشط</span>
+          </div>
+          <div class="life-grid">
+            <div class="life-cell">
+              <div class="life-icon-wrap li-green"><svg width="16" height="16" viewBox="0 0 16 16" stroke="var(--green)" fill="none" stroke-width="1.5" stroke-linecap="round"><circle cx="8" cy="4.5" r="2.5"/><path d="M2 14c0-3.5 2.5-5.5 6-5.5s6 2 6 5.5"/></svg></div>
+              <div class="li-num">3</div><div class="li-lbl">بالغون</div>
+            </div>
+            <div class="life-cell">
+              <div class="life-icon-wrap li-blue"><svg width="16" height="16" viewBox="0 0 16 16" stroke="var(--blue)" fill="none" stroke-width="1.5" stroke-linecap="round"><circle cx="8" cy="4" r="2"/><path d="M3 14c0-3 2-5 5-5s5 2 5 5"/></svg></div>
+              <div class="li-num">2</div><div class="li-lbl">أطفال</div>
+            </div>
+            <div class="life-cell">
+              <div class="life-icon-wrap li-amber"><svg width="16" height="16" viewBox="0 0 16 16" stroke="var(--amber)" fill="none" stroke-width="1.5" stroke-linecap="round"><path d="M2 10c0-3 2-5 5-5a5 5 0 015 5v1H2v-1z"/><path d="M5 11v3M11 11v3M1 10h14"/></svg></div>
+              <div class="li-num">1</div><div class="li-lbl">حيوانات</div>
+            </div>
+            <div class="life-cell" style="border-left:none">
+              <div class="life-icon-wrap li-cyan"><svg width="16" height="16" viewBox="0 0 16 16" stroke="var(--cyan)" fill="none" stroke-width="1.5" stroke-linecap="round"><path d="M8 2l1.5 3 3.5.5-2.5 2.5.6 3.5L8 10l-3.1 1.5.6-3.5L3 5.5l3.5-.5L8 2z"/></svg></div>
+              <div class="li-num" style="color:var(--cyan)">6</div><div class="li-lbl">رادار</div>
+            </div>
+          </div>
+        </div>
+        <!-- AI Nose -->
+        <div class="card">
+          <div class="card-title">
+            <div class="card-title-left">الأنف الرقمي</div>
+            <span class="card-badge cb-cyan">AI نشط</span>
+          </div>
+          <div class="smell-row"><div class="smell-dot" style="background:var(--green)"></div><div class="smell-name">بخور / عطر</div><span class="smell-badge sb-safe">آمن</span></div>
+          <div class="smell-row"><div class="smell-dot" style="background:var(--green)"></div><div class="smell-name">زيت طبخ</div><span class="smell-badge sb-safe">آمن</span></div>
+          <div class="smell-row"><div class="smell-dot" style="background:var(--amber)"></div><div class="smell-name">احتراق بلاستيك</div><span class="smell-badge sb-warn">تنبيه</span></div>
+          <div class="smell-row"><div class="smell-dot" style="background:var(--green)"></div><div class="smell-name">غاز طبيعي</div><span class="smell-badge sb-safe" id="gas-smell">آمن</span></div>
+        </div>
+      </div>
+
+      <!-- Chart + Sensors -->
+      <div class="two-col">
+        <div class="card">
+          <div class="card-title">
+            <div class="card-title-left">قراءات آخر 60 دقيقة</div>
+            <span class="card-badge cb-blue">مباشر</span>
+          </div>
+          <div class="chart-wrap"><canvas id="liveChart"></canvas></div>
+        </div>
+        <div class="card">
+          <div class="card-title">حالة الحساسات</div>
+          <div class="sensor-row"><div class="s-dot safe"></div><div class="s-name">AI Nose</div><div style="text-align:left"><div class="s-val safe">نشط</div><div class="s-sub">دقة 98.4%</div></div></div>
+          <div class="sensor-row"><div class="s-dot safe"></div><div class="s-name">رادار mmWave</div><div style="text-align:left"><div class="s-val safe">نشط</div><div class="s-sub">60GHz</div></div></div>
+          <div class="sensor-row"><div class="s-dot safe" id="valve-dot"></div><div class="s-name">صمام الغاز</div><div class="s-val safe" id="valve-val">مفتوح</div></div>
+          <div class="sensor-row"><div class="s-dot safe" id="elec-dot"></div><div class="s-name">الكهرباء</div><div class="s-val safe" id="elec-val">متصل</div></div>
+          <div class="sensor-row"><div class="s-dot safe"></div><div class="s-name">CO₂ Sensor</div><div style="text-align:left"><div class="s-val safe">نشط</div><div class="s-sub">±30ppm</div></div></div>
+          <div class="sensor-row"><div class="s-dot safe"></div><div class="s-name">CO Sensor</div><div style="text-align:left"><div class="s-val safe">نشط</div><div class="s-sub">±0.5ppm</div></div></div>
+          <div class="sensor-row"><div class="s-dot safe"></div><div class="s-name">كاميرات (4)</div><div class="s-val safe">نشطة</div></div>
+          <div class="sensor-row"><div class="s-dot warn"></div><div class="s-name">بطارية احتياطية</div><div class="s-val warn">72%</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ PAGE: LIVES ══ -->
+    <div class="page" id="page-lives">
+      <div class="card" style="margin-bottom:14px">
+        <div class="card-title">إحصاء الأرواح الحي — رادار mmWave 60GHz</div>
+        <div class="four-col">
+          <div class="report-stat"><div class="report-num" style="color:var(--green)">3</div><div class="report-lbl">بالغون مرصودون</div></div>
+          <div class="report-stat"><div class="report-num" style="color:var(--blue)">2</div><div class="report-lbl">أطفال</div></div>
+          <div class="report-stat"><div class="report-num" style="color:var(--amber)">1</div><div class="report-lbl">حيوانات أليفة</div></div>
+          <div class="report-stat"><div class="report-num" style="color:var(--cyan)">6</div><div class="report-lbl">إجمالي الأرواح</div></div>
+        </div>
+      </div>
+      <div class="two-col">
+        <div class="card">
+          <div class="card-title">توزيع الأرواح بالغرف</div>
+          <div class="sensor-row"><div class="s-dot safe"></div><div class="s-name">غرفة النوم الرئيسية</div><div class="s-val">2 شخص</div></div>
+          <div class="sensor-row"><div class="s-dot warn"></div><div class="s-name">المطبخ</div><div class="s-val warn">1 شخص ⚠</div></div>
+          <div class="sensor-row"><div class="s-dot safe"></div><div class="s-name">غرفة الأطفال</div><div class="s-val">2 طفل</div></div>
+          <div class="sensor-row"><div class="s-dot safe"></div><div class="s-name">المعيشة</div><div class="s-val">0</div></div>
+          <div class="sensor-row"><div class="s-dot safe"></div><div class="s-name">الحمام</div><div class="s-val">0</div></div>
+          <div class="sensor-row"><div class="s-dot safe"></div><div class="s-name">الحديقة</div><div class="s-val">1 حيوان</div></div>
+        </div>
+        <div class="card">
+          <div class="card-title">حالة الرادار</div>
+          <div class="sensor-row"><div class="s-dot safe"></div><div class="s-name">تردد الرادار</div><div class="s-val safe">60 GHz</div></div>
+          <div class="sensor-row"><div class="s-dot safe"></div><div class="s-name">نطاق الكشف</div><div class="s-val">8 متر</div></div>
+          <div class="sensor-row"><div class="s-dot safe"></div><div class="s-name">زاوية الرؤية</div><div class="s-val">120°</div></div>
+          <div class="sensor-row"><div class="s-dot safe"></div><div class="s-name">دقة الموقع</div><div class="s-val">±15 سم</div></div>
+          <div class="sensor-row"><div class="s-dot safe"></div><div class="s-name">معدل التحديث</div><div class="s-val">10 fps</div></div>
+          <div class="sensor-row"><div class="s-dot safe"></div><div class="s-name">حماية الخصوصية</div><div class="s-val safe">بدون صور</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ PAGE: TWIN ══ -->
+    <div class="page" id="page-twin">
+      <div class="card">
+        <div class="card-title">
+          <div class="card-title-left">التوأم الرقمي — مسقط المنزل</div>
+          <span class="card-badge" id="evac-badge" style="display:none;background:var(--red-dim);color:var(--red);border:0.5px solid var(--red)">مسار إخلاء مفعّل</span>
+        </div>
+        <svg id="twin-svg" viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg" style="width:100%;border-radius:8px">
+          <rect width="400" height="300" fill="#161b27"/>
+          <!-- rooms -->
+          <rect x="6" y="6" width="130" height="140" fill="#1e2535" stroke="#ffffff14" stroke-width="0.5"/>
+          <rect x="136" y="6" width="120" height="140" fill="#1e2535" stroke="#ffffff14" stroke-width="0.5"/>
+          <rect x="256" y="6" width="138" height="140" fill="#1e2535" stroke="#ffffff14" stroke-width="0.5"/>
+          <rect x="6" y="146" width="170" height="148" fill="#1e2535" stroke="#ffffff14" stroke-width="0.5"/>
+          <rect x="176" y="146" width="218" height="148" fill="#1e2535" stroke="#ffffff14" stroke-width="0.5"/>
+          <!-- labels -->
+          <text x="71" y="76" text-anchor="middle" font-size="11" fill="#4a5268" font-family="Tajawal,sans-serif">غرفة النوم</text>
+          <text x="196" y="76" text-anchor="middle" font-size="11" fill="#4a5268" font-family="Tajawal,sans-serif">المطبخ</text>
+          <text x="325" y="76" text-anchor="middle" font-size="11" fill="#4a5268" font-family="Tajawal,sans-serif">غرفة الأطفال</text>
+          <text x="91" y="222" text-anchor="middle" font-size="11" fill="#4a5268" font-family="Tajawal,sans-serif">الحمام</text>
+          <text x="285" y="222" text-anchor="middle" font-size="11" fill="#4a5268" font-family="Tajawal,sans-serif">المعيشة</text>
+          <!-- door markers -->
+          <rect x="125" y="90" width="11" height="3" fill="#0f6e56" rx="1"/>
+          <rect x="250" y="90" width="11" height="3" fill="#0f6e56" rx="1"/>
+          <rect x="170" y="210" width="11" height="3" fill="#0f6e56" rx="1" transform="rotate(90,175,212)"/>
+          <!-- warning kitchen -->
+          <circle id="kitchen-warn" cx="196" cy="55" r="8" fill="#e09a2a" opacity=".85"/>
+          <text x="196" y="59" text-anchor="middle" font-size="9" fill="#7a5210" font-weight="bold" font-family="sans-serif">!</text>
+          <!-- people -->
+          <circle cx="60" cy="100" r="5" fill="#4a90d9" opacity=".85"/>
+          <circle cx="80" cy="110" r="5" fill="#4a90d9" opacity=".85"/>
+          <circle cx="310" cy="60" r="4" fill="#4a90d9" opacity=".8"/>
+          <circle cx="330" cy="75" r="4" fill="#4a90d9" opacity=".8"/>
+          <circle cx="196" cy="90" r="5" fill="#4a90d9" opacity=".85"/>
+          <!-- pet -->
+          <circle cx="100" cy="200" r="5" fill="#e09a2a" opacity=".8"/>
+          <!-- evacuation path (hidden until alert) -->
+          <path id="evac-path-1" class="evac-path" d="M196 90 L196 146 L176 146 L176 294 L6 294" fill="none" stroke="#e05252" stroke-width="3" stroke-linecap="round"/>
+          <path id="evac-path-2" class="evac-path" d="M60 100 L6 100 L6 294" fill="none" stroke="#e05252" stroke-width="3" stroke-linecap="round"/>
+          <!-- exit -->
+          <text x="12" y="290" font-size="9" fill="#e05252" font-family="sans-serif" opacity="0" id="exit-label">⬅ مخرج</text>
+          <!-- legend -->
+          <circle cx="14" cy="272" r="4" fill="#4a90d9"/>
+          <text x="22" y="276" font-size="8" fill="#4a5268" font-family="sans-serif">أشخاص</text>
+          <circle cx="64" cy="272" r="4" fill="#e09a2a"/>
+          <text x="72" y="276" font-size="8" fill="#4a5268" font-family="sans-serif">حيوان</text>
+          <circle cx="108" cy="272" r="4" fill="#e09a2a" opacity=".85"/>
+          <text x="116" y="276" font-size="8" fill="#4a5268" font-family="sans-serif">تنبيه</text>
+        </svg>
+      </div>
+    </div>
+
+    <!-- ══ PAGE: NOSE ══ -->
+    <div class="page" id="page-nose">
+      <div class="two-col">
+        <div class="card">
+          <div class="card-title"><div class="card-title-left">تصنيف الروائح — AI Nose</div><span class="card-badge cb-cyan">دقة 98.4%</span></div>
+          <div class="smell-row"><div class="smell-dot" style="background:var(--green)"></div><div class="smell-name">بخور / عطر</div><span class="smell-badge sb-safe">آمن</span></div>
+          <div class="smell-row"><div class="smell-dot" style="background:var(--green)"></div><div class="smell-name">زيت طبخ</div><span class="smell-badge sb-safe">آمن</span></div>
+          <div class="smell-row"><div class="smell-dot" style="background:var(--amber)"></div><div class="smell-name">احتراق بلاستيك</div><span class="smell-badge sb-warn">تنبيه</span></div>
+          <div class="smell-row"><div class="smell-dot" style="background:var(--green)"></div><div class="smell-name">غاز طبيعي / LPG</div><span class="smell-badge sb-safe">آمن</span></div>
+          <div class="smell-row"><div class="smell-dot" style="background:var(--green)"></div><div class="smell-name">كيماويات / مذيبات</div><span class="smell-badge sb-safe">آمن</span></div>
+          <div class="smell-row"><div class="smell-dot" style="background:var(--green)"></div><div class="smell-name">دخان سيجارة</div><span class="smell-badge sb-safe">آمن</span></div>
+        </div>
+        <div class="card">
+          <div class="card-title">حالة حساسات الهواء</div>
+          <div class="sensor-row"><div class="s-dot safe"></div><div class="s-name">MQ-2 دخان/غاز</div><div class="s-val safe">طبيعي</div></div>
+          <div class="sensor-row"><div class="s-dot safe"></div><div class="s-name">MQ-135 هواء</div><div class="s-val safe">نظيف</div></div>
+          <div class="sensor-row"><div class="s-dot safe"></div><div class="s-name">SCD40 CO₂</div><div class="s-val safe">412 ppm</div></div>
+          <div class="sensor-row"><div class="s-dot safe"></div><div class="s-name">MH-Z19 CO</div><div class="s-val safe">0.2 ppm</div></div>
+          <div class="sensor-row"><div class="s-dot safe"></div><div class="s-name">DHT22 حرارة/رطوبة</div><div class="s-val safe">24° / 42%</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ PAGE: PREDICT ══ -->
+    <div class="page" id="page-predict">
+      <div class="two-col">
+        <div class="card">
+          <div class="card-title"><div class="card-title-left">التنبؤ بالمخاطر — 24 ساعة</div><span class="card-badge cb-blue">AI محدّث</span></div>
+          <div class="predict-row"><div class="p-label">حريق</div><div class="p-track"><div class="p-fill" style="width:8%;background:var(--green)"></div></div><div class="p-pct" style="color:var(--green)">8%</div></div>
+          <div class="predict-row"><div class="p-label">تسرب غاز</div><div class="p-track"><div class="p-fill" style="width:15%;background:var(--amber)"></div></div><div class="p-pct" style="color:var(--amber)">15%</div></div>
+          <div class="predict-row"><div class="p-label">CO مرتفع</div><div class="p-track"><div class="p-fill" style="width:6%;background:var(--purple)"></div></div><div class="p-pct" style="color:var(--purple)">6%</div></div>
+          <div class="predict-row"><div class="p-label">فيضان</div><div class="p-track"><div class="p-fill" style="width:4%;background:var(--blue)"></div></div><div class="p-pct" style="color:var(--blue)">4%</div></div>
+          <div class="predict-row"><div class="p-label">انقطاع كهرباء</div><div class="p-track"><div class="p-fill" style="width:22%;background:var(--amber)"></div></div><div class="p-pct" style="color:var(--amber)">22%</div></div>
+          <div class="predict-row"><div class="p-label">اقتحام</div><div class="p-track"><div class="p-fill" style="width:3%;background:var(--red)"></div></div><div class="p-pct" style="color:var(--red)">3%</div></div>
+        </div>
+        <div class="card">
+          <div class="card-title">توصيات النظام</div>
+          <div style="display:flex;flex-direction:column;gap:10px;font-size:12px;color:var(--text2);line-height:1.6">
+            <div style="padding:10px;background:var(--amber-dim);border:0.5px solid var(--amber);border-radius:8px;color:var(--amber)">⚡ احتمالية انقطاع الكهرباء 22% — تأكد من شحن البطارية الاحتياطية</div>
+            <div style="padding:10px;background:var(--bg3);border:0.5px solid var(--border);border-radius:8px">🔧 تسرب غاز 15% — يُنصح بفحص الوصلات الشهري</div>
+            <div style="padding:10px;background:var(--green-dim);border:0.5px solid var(--green);border-radius:8px;color:var(--green)">✓ جودة الهواء ممتازة — CO₂ ضمن المعدل الطبيعي</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ PAGE: HISTORY ══ -->
+    <div class="page" id="page-history">
+      <div class="card">
+        <div class="card-title"><div class="card-title-left">السجل التاريخي للقراءات</div><span class="card-badge cb-blue">آخر 24 ساعة</span></div>
+        <div class="chart-wrap" style="height:200px"><canvas id="histChart"></canvas></div>
+      </div>
+    </div>
+
+    <!-- ══ PAGE: CONTROL ══ -->
+    <div class="page" id="page-control">
+      <div class="three-col">
+        <div>
+          <div class="two-col">
+            <div class="card">
+              <div class="card-title">التحكم الآلي</div>
+              <div class="toggle-row"><span>إغلاق الصمام تلقائياً</span><label class="tog"><input type="checkbox" checked><div class="tog-track"></div></label></div>
+              <div class="toggle-row"><span>فصل الكهرباء</span><label class="tog"><input type="checkbox" checked><div class="tog-track"></div></label></div>
+              <div class="toggle-row"><span>رشاشات المياه</span><label class="tog"><input type="checkbox" checked><div class="tog-track"></div></label></div>
+              <div class="toggle-row"><span>المسار المضيء</span><label class="tog"><input type="checkbox" checked><div class="tog-track"></div></label></div>
+              <div class="toggle-row"><span>التوجيه الصوتي</span><label class="tog"><input type="checkbox"><div class="tog-track"></div></label></div>
+              <div class="toggle-row"><span>إنذار الدفاع المدني</span><label class="tog"><input type="checkbox" checked><div class="tog-track"></div></label></div>
+            </div>
+            <div class="card">
+              <div class="card-title">تحكم سريع</div>
+              <div class="ctrl-grid">
+                <div class="ctrl-btn active" id="vbtn" onclick="toggleValve()"><div class="ctrl-btn-icon"><svg viewBox="0 0 16 16"><path d="M4 8h8M8 4v8"/><circle cx="8" cy="8" r="5"/></svg></div><div class="ctrl-btn-label">الصمام</div></div>
+                <div class="ctrl-btn" id="ebtn" onclick="toggleElec()"><div class="ctrl-btn-icon"><svg viewBox="0 0 16 16"><path d="M9 2L5 9h5l-3 5"/></svg></div><div class="ctrl-btn-label">الكهرباء</div></div>
+                <div class="ctrl-btn active"><div class="ctrl-btn-icon"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="3"/><path d="M2 8a6 6 0 0012 0"/></svg></div><div class="ctrl-btn-label">كاميرات</div></div>
+                <div class="ctrl-btn" onclick="showPage('twin',null)"><div class="ctrl-btn-icon"><svg viewBox="0 0 16 16"><path d="M8 2v4l2 2-2 2v4M12 6l2-1-2-1M4 6L2 5l2-1"/></svg></div><div class="ctrl-btn-label">التوأم</div></div>
+                <div class="ctrl-btn danger-btn" onclick="sendSOS()"><div class="ctrl-btn-icon"><svg viewBox="0 0 16 16"><path d="M8 2C4.7 2 2 4.7 2 8s2.7 6 6 6 6-2.7 6-6-2.7-6-6-6zM8 5v4M8 11v.5"/></svg></div><div class="ctrl-btn-label">استغاثة</div></div>
+                <div class="ctrl-btn" onclick="showPage('log',null)"><div class="ctrl-btn-icon"><svg viewBox="0 0 16 16"><rect x="2" y="3" width="12" height="10" rx="1.5"/><path d="M5 7h6M5 10h4"/></svg></div><div class="ctrl-btn-label">السجل</div></div>
+              </div>
+            </div>
+          </div>
+          <div class="card" style="margin-top:14px">
+            <div class="card-title">التنبؤ بالمخاطر</div>
+            <div class="predict-row"><div class="p-label">حريق</div><div class="p-track"><div class="p-fill" style="width:8%;background:var(--green)"></div></div><div class="p-pct" style="color:var(--green)">8%</div></div>
+            <div class="predict-row"><div class="p-label">تسرب غاز</div><div class="p-track"><div class="p-fill" style="width:15%;background:var(--amber)"></div></div><div class="p-pct" style="color:var(--amber)">15%</div></div>
+            <div class="predict-row"><div class="p-label">فيضان</div><div class="p-track"><div class="p-fill" style="width:4%;background:var(--blue)"></div></div><div class="p-pct" style="color:var(--blue)">4%</div></div>
+            <div class="predict-row"><div class="p-label">انقطاع كهرباء</div><div class="p-track"><div class="p-fill" style="width:22%;background:var(--amber)"></div></div><div class="p-pct" style="color:var(--amber)">22%</div></div>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <div class="card">
+            <div class="card-title">التوأم الرقمي المصغر</div>
+            <svg viewBox="0 0 200 160" xmlns="http://www.w3.org/2000/svg" style="width:100%;border-radius:6px">
+              <rect width="200" height="160" fill="#161b27"/>
+              <rect x="4" y="4" width="72" height="80" fill="#1e2535" stroke="#ffffff14" stroke-width="0.5"/>
+              <rect x="76" y="4" width="62" height="80" fill="#1e2535" stroke="#ffffff14" stroke-width="0.5"/>
+              <rect x="138" y="4" width="58" height="80" fill="#1e2535" stroke="#ffffff14" stroke-width="0.5"/>
+              <rect x="4" y="84" width="90" height="72" fill="#1e2535" stroke="#ffffff14" stroke-width="0.5"/>
+              <rect x="94" y="84" width="102" height="72" fill="#1e2535" stroke="#ffffff14" stroke-width="0.5"/>
+              <text x="40" y="46" text-anchor="middle" font-size="7" fill="#4a5268" font-family="sans-serif">غرفة النوم</text>
+              <text x="107" y="46" text-anchor="middle" font-size="7" fill="#4a5268" font-family="sans-serif">المطبخ</text>
+              <text x="167" y="46" text-anchor="middle" font-size="7" fill="#4a5268" font-family="sans-serif">الأطفال</text>
+              <text x="49" y="122" text-anchor="middle" font-size="7" fill="#4a5268" font-family="sans-serif">الحمام</text>
+              <text x="145" y="122" text-anchor="middle" font-size="7" fill="#4a5268" font-family="sans-serif">المعيشة</text>
+              <circle id="kitchen-warn2" cx="107" cy="32" r="5" fill="#e09a2a" opacity=".9"/>
+              <text x="107" y="35" text-anchor="middle" font-size="7" fill="#7a5210" font-weight="bold" font-family="sans-serif">!</text>
+              <circle cx="38" cy="60" r="3.5" fill="#4a90d9" opacity=".8"/>
+              <circle cx="160" cy="40" r="3" fill="#4a90d9" opacity=".8"/>
+              <circle cx="148" cy="52" r="3" fill="#4a90d9" opacity=".8"/>
+              <circle cx="140" cy="110" r="3" fill="#4a90d9" opacity=".8"/>
+              <circle cx="160" cy="118" r="3" fill="#4a90d9" opacity=".8"/>
+              <circle cx="52" cy="108" r="3" fill="#e09a2a" opacity=".8"/>
+            </svg>
+          </div>
+          <button class="sim-btn" id="sim-btn" onclick="triggerAlert()">محاكاة خطر — تسرب غاز</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ PAGE: LOG ══ -->
+    <div class="page" id="page-log">
+      <div class="card">
+        <div class="card-title">
+          <div class="card-title-left">سجل الأحداث</div>
+          <div class="log-filters" style="margin-bottom:0">
+            <button class="log-filter-btn active" onclick="filterLog('all',this)">الكل</button>
+            <button class="log-filter-btn" onclick="filterLog('danger',this)">خطر</button>
+            <button class="log-filter-btn" onclick="filterLog('warn',this)">تحذير</button>
+            <button class="log-filter-btn" onclick="filterLog('info',this)">معلومة</button>
+          </div>
+        </div>
+        <div id="log-list">
+          <div class="log-entry" data-type="danger"><div class="log-icon li-r"><svg viewBox="0 0 14 14"><path d="M7 3v5M7 10v1"/><path d="M1 12L7 2l6 10H1z"/></svg></div><div class="log-body"><div class="log-title">تسرب غاز — غاز LEL وصل 18.4%</div><div class="log-time">اليوم 14:32 · المطبخ</div></div><span class="log-tag" style="background:var(--red-dim);color:var(--red);border-color:var(--red)">خطر</span></div>
+          <div class="log-entry" data-type="info"><div class="log-icon li-g"><svg viewBox="0 0 14 14"><path d="M2 7l4 4 6-6"/></svg></div><div class="log-body"><div class="log-title">إغلاق الصمام تلقائياً</div><div class="log-time">اليوم 14:32 · نظام</div></div><span class="log-tag" style="background:var(--green-dim);color:var(--green);border-color:var(--green)">آلي</span></div>
+          <div class="log-entry" data-type="warn"><div class="log-icon li-a"><svg viewBox="0 0 14 14"><path d="M7 4v4M7 10v1"/><path d="M1 12L7 2l6 10H1z"/></svg></div><div class="log-body"><div class="log-title">تنبيه — احتراق بلاستيك رُصد</div><div class="log-time">اليوم 11:15 · غرفة المعيشة</div></div><span class="log-tag" style="background:var(--amber-dim);color:var(--amber);border-color:var(--amber)">تحذير</span></div>
+          <div class="log-entry" data-type="warn"><div class="log-icon li-a"><svg viewBox="0 0 14 14"><path d="M7 2v8M7 12v1"/></svg></div><div class="log-body"><div class="log-title">بطارية احتياطية وصلت 72%</div><div class="log-time">اليوم 09:00 · النظام</div></div><span class="log-tag" style="background:var(--amber-dim);color:var(--amber);border-color:var(--amber)">تحذير</span></div>
+          <div class="log-entry" data-type="info"><div class="log-icon li-b"><svg viewBox="0 0 14 14"><circle cx="7" cy="7" r="5"/><path d="M7 5v3l2 1"/></svg></div><div class="log-body"><div class="log-title">اكتشاف 6 أرواح — الرادار نشط</div><div class="log-time">اليوم 07:30 · رادار mmWave</div></div><span class="log-tag" style="background:var(--blue-dim);color:var(--blue);border-color:var(--blue)">معلومة</span></div>
+          <div class="log-entry" data-type="info"><div class="log-icon li-g"><svg viewBox="0 0 14 14"><path d="M2 7l4 4 6-6"/></svg></div><div class="log-body"><div class="log-title">تحديث النظام v3.0.0 مكتمل</div><div class="log-time">أمس 23:00 · نظام</div></div><span class="log-tag" style="background:var(--green-dim);color:var(--green);border-color:var(--green)">نظام</span></div>
+          <div class="log-entry" data-type="warn"><div class="log-icon li-a"><svg viewBox="0 0 14 14"><path d="M7 4v4M7 10v1"/><path d="M1 12L7 2l6 10H1z"/></svg></div><div class="log-body"><div class="log-title">CO₂ ارتفع مؤقتاً إلى 850 ppm</div><div class="log-time">أمس 20:15 · المطبخ أثناء الطبخ</div></div><span class="log-tag" style="background:var(--amber-dim);color:var(--amber);border-color:var(--amber)">تحذير</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ PAGE: AI ══ -->
+    <div class="page" id="page-ai">
+      <div class="card">
+        <div class="card-title"><div class="card-title-left">مساعد السلامة AI</div><span class="card-badge cb-cyan">Claude AI</span></div>
+        <div class="chat-messages" id="chat-messages">
+          <div class="chat-bubble ai">مرحباً! أنا مساعد السلامة AI لمنصة Sentinel-X. يمكنني الإجابة على أسئلتك حول قراءات الحساسات، المخاطر، وإجراءات السلامة. كيف يمكنني مساعدتك؟</div>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px">
+          <button class="tbtn" style="font-size:11px" onclick="quickAsk('ما خطورة مستوى الغاز الحالي؟')">ما خطورة الغاز الحالي؟</button>
+          <button class="tbtn" style="font-size:11px" onclick="quickAsk('ما الإجراء الصحيح عند تسرب الغاز؟')">إجراءات تسرب الغاز</button>
+          <button class="tbtn" style="font-size:11px" onclick="quickAsk('ما معنى قراءة CO₂ = 412 ppm؟')">تفسير CO₂</button>
+          <button class="tbtn" style="font-size:11px" onclick="quickAsk('كيف أحافظ على سلامة الأطفال في المنزل؟')">سلامة الأطفال</button>
+        </div>
+        <div class="chat-input-row">
+          <input class="chat-input" id="chat-input" placeholder="اسأل عن السلامة، القراءات، المخاطر..." onkeydown="if(event.key==='Enter')sendChat()"/>
+          <button class="chat-send" onclick="sendChat()">إرسال</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ PAGE: CONTACTS ══ -->
+    <div class="page" id="page-contacts">
+      <div class="card" style="margin-bottom:14px">
+        <div class="card-title">جهات الاتصال الطارئة</div>
+        <div class="contact-card"><div class="contact-avatar ca-red">🚒</div><div class="contact-info"><div class="contact-name">الدفاع المدني العُماني</div><div class="contact-role">طوارئ 24/7</div></div><button class="contact-call" onclick="callContact('999')">اتصال 999</button></div>
+        <div class="contact-card"><div class="contact-avatar ca-blue">🏥</div><div class="contact-info"><div class="contact-name">الإسعاف الطبي</div><div class="contact-role">طوارئ طبية</div></div><button class="contact-call" onclick="callContact('9999')">اتصال 9999</button></div>
+        <div class="contact-card"><div class="contact-avatar ca-amber">👮</div><div class="contact-info"><div class="contact-name">الشرطة العُمانية</div><div class="contact-role">طوارئ أمنية</div></div><button class="contact-call" onclick="callContact('9999')">اتصال 9999</button></div>
+        <div class="contact-card"><div class="contact-avatar ca-green">👨‍👩‍👧</div><div class="contact-info"><div class="contact-name">ولي الأمر / المسؤول</div><div class="contact-role">جهة الاتصال الأساسية</div></div><button class="contact-call" onclick="callContact('')">اتصال</button></div>
+        <div class="contact-card"><div class="contact-avatar ca-green">🏠</div><div class="contact-info"><div class="contact-name">شركة الغاز العُمانية</div><div class="contact-role">طوارئ تسرب الغاز</div></div><button class="contact-call" onclick="callContact('1234')">اتصال</button></div>
+      </div>
+    </div>
+
+    <!-- ══ PAGE: REPORT ══ -->
+    <div class="page" id="page-report">
+      <div class="card" style="margin-bottom:14px">
+        <div class="card-title"><div class="card-title-left">التقرير الأسبوعي</div><span class="card-badge cb-green">أبريل 13–19، 2026</span></div>
+        <div class="four-col" style="margin-bottom:0">
+          <div class="report-stat"><div class="report-num" style="color:var(--red)">2</div><div class="report-lbl">أحداث خطرة</div></div>
+          <div class="report-stat"><div class="report-num" style="color:var(--amber)">5</div><div class="report-lbl">تحذيرات</div></div>
+          <div class="report-stat"><div class="report-num" style="color:var(--green)">99.8%</div><div class="report-lbl">وقت التشغيل</div></div>
+          <div class="report-stat"><div class="report-num" style="color:var(--blue)">1,247</div><div class="report-lbl">ساعات مراقبة</div></div>
+        </div>
+      </div>
+      <div class="two-col">
+        <div class="card">
+          <div class="card-title">ملخص الأسبوع</div>
+          <div class="sensor-row"><div class="s-dot safe"></div><div class="s-name">متوسط CO₂</div><div class="s-val safe">430 ppm</div></div>
+          <div class="sensor-row"><div class="s-dot safe"></div><div class="s-name">متوسط الحرارة</div><div class="s-val">24.3°م</div></div>
+          <div class="sensor-row"><div class="s-dot safe"></div><div class="s-name">متوسط الرطوبة</div><div class="s-val">43%</div></div>
+          <div class="sensor-row"><div class="s-dot safe"></div><div class="s-name">أعلى قراءة CO</div><div class="s-val">1.2 ppm</div></div>
+          <div class="sensor-row"><div class="s-dot warn"></div><div class="s-name">أعلى قراءة غاز</div><div class="s-val warn">18.4% LEL</div></div>
+          <div class="sensor-row"><div class="s-dot safe"></div><div class="s-name">إجمالي استجابات آلية</div><div class="s-val">3</div></div>
+        </div>
+        <div class="card">
+          <div class="card-title">صحة الحساسات</div>
+          <div class="calib-row"><div class="s-dot safe" style="flex-shrink:0"></div><div class="s-name" style="flex:1">AI Nose</div><div class="calib-bar"><div class="calib-fill" style="width:98%;background:var(--green)"></div></div><div class="calib-date">98%</div></div>
+          <div class="calib-row"><div class="s-dot safe" style="flex-shrink:0"></div><div class="s-name" style="flex:1">mmWave رادار</div><div class="calib-bar"><div class="calib-fill" style="width:100%;background:var(--green)"></div></div><div class="calib-date">100%</div></div>
+          <div class="calib-row"><div class="s-dot safe" style="flex-shrink:0"></div><div class="s-name" style="flex:1">CO₂</div><div class="calib-bar"><div class="calib-fill" style="width:96%;background:var(--green)"></div></div><div class="calib-date">96%</div></div>
+          <div class="calib-row"><div class="s-dot safe" style="flex-shrink:0"></div><div class="s-name" style="flex:1">CO</div><div class="calib-bar"><div class="calib-fill" style="width:95%;background:var(--green)"></div></div><div class="calib-date">95%</div></div>
+          <div class="calib-row"><div class="s-dot warn" style="flex-shrink:0"></div><div class="s-name" style="flex:1">بطارية</div><div class="calib-bar"><div class="calib-fill" style="width:72%;background:var(--amber)"></div></div><div class="calib-date">72%</div></div>
+          <div style="font-size:10px;color:var(--text3);margin-top:10px">آخر معايرة شاملة: 1 أبريل 2026</div>
+          <button class="tbtn" style="margin-top:10px;width:100%;font-size:12px" onclick="showToast('info','تحميل التقرير','جارٍ إنشاء ملف PDF...')">⬇ تحميل PDF</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ PAGE: SETTINGS ══ -->
+    <div class="page" id="page-settings">
+      <div class="card" style="margin-bottom:14px">
+        <div class="card-title">وضع التشغيل</div>
+        <div class="mode-grid">
+          <div class="mode-card selected" id="mode-normal" onclick="setMode('normal')"><div class="mode-icon">🏠</div><div class="mode-name">عادي</div><div class="mode-desc">حساسية قياسية</div></div>
+          <div class="mode-card" id="mode-night" onclick="setMode('night')"><div class="mode-icon">🌙</div><div class="mode-name">ليلي</div><div class="mode-desc">تنبيهات صامتة</div></div>
+          <div class="mode-card" id="mode-away" onclick="setMode('away')"><div class="mode-icon">✈️</div><div class="mode-name">غياب</div><div class="mode-desc">أقصى حساسية</div></div>
+          <div class="mode-card" id="mode-maintenance" onclick="setMode('maintenance')"><div class="mode-icon">🔧</div><div class="mode-name">صيانة</div><div class="mode-desc">إيقاف التنبيهات</div></div>
+        </div>
+      </div>
+      <div class="two-col">
+        <div class="card">
+          <div class="card-title">حدود التنبيه</div>
+          <div class="sensor-row"><div class="s-name">غاز LEL تحذير</div><div class="s-val">10%</div></div>
+          <div class="sensor-row"><div class="s-name">غاز LEL خطر</div><div class="s-val danger">25%</div></div>
+          <div class="sensor-row"><div class="s-name">CO₂ تحذير</div><div class="s-val">800 ppm</div></div>
+          <div class="sensor-row"><div class="s-name">CO₂ خطر</div><div class="s-val danger">1500 ppm</div></div>
+          <div class="sensor-row"><div class="s-name">CO تحذير</div><div class="s-val">9 ppm</div></div>
+          <div class="sensor-row"><div class="s-name">درجة حرارة خطر</div><div class="s-val danger">55°م</div></div>
+        </div>
+        <div class="card">
+          <div class="card-title">إعدادات الإشعارات</div>
+          <div class="toggle-row"><span>إشعارات Push</span><label class="tog"><input type="checkbox" checked><div class="tog-track"></div></label></div>
+          <div class="toggle-row"><span>رسائل SMS</span><label class="tog"><input type="checkbox" checked><div class="tog-track"></div></label></div>
+          <div class="toggle-row"><span>بريد إلكتروني</span><label class="tog"><input type="checkbox"><div class="tog-track"></div></label></div>
+          <div class="toggle-row"><span>صوت التنبيه</span><label class="tog"><input type="checkbox" checked><div class="tog-track"></div></label></div>
+          <div class="toggle-row"><span>تقرير أسبوعي تلقائي</span><label class="tog"><input type="checkbox" checked><div class="tog-track"></div></label></div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /main -->
+</div><!-- /app -->
+</div><!-- /main-app -->
+
+<!-- Chart.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+
 <script>
-  const TARGET='https://alalawi1980.github.io/sentinel/';
+/* ══ SPLASH ══ */
+(function(){
   const DURATION=5000;
-  const fill=document.getElementById('fill');
-  const pct=document.getElementById('pct');
-  const stText=document.getElementById('status-text');
-  const splash=document.getElementById('splash');
-  const notice=document.getElementById('redirect-notice');
-  const labels=['تهيئة النظام...','اتصال ESP32-S3...','تشغيل رادار mmWave...','معايرة الأنف الرقمي...','النظام جاهز ✓'];
-  [0,1,2,3,4].forEach(i=>setTimeout(()=>document.getElementById('s'+i).classList.add('show'),i*950));
-  function easeInOut(t){return t<.5?2*t*t:-1+(4-2*t)*t}
+  const labels=['تهيئة النظام...','اتصال ESP32-S3...','تشغيل رادار mmWave...','معايرة الأنف الرقمي + CO₂...','النظام جاهز ✓'];
+  const fillEl=document.getElementById('sp-fill');
+  const pctEl=document.getElementById('sp-pct');
+  const stEl=document.getElementById('sp-status');
+  const overlay=document.getElementById('splash-overlay');
+  const app=document.getElementById('main-app');
+  [0,1,2,3,4].forEach(i=>setTimeout(()=>document.getElementById('sl'+i).classList.add('on'),i*900));
+  function ease(t){return t<.5?2*t*t:-1+(4-2*t)*t}
   const START=performance.now();
   function tick(now){
     const raw=Math.min((now-START)/DURATION,1);
-    const p=Math.round(easeInOut(raw)*100);
-    fill.style.width=p+'%';
-    pct.textContent=p+'%';
-    stText.textContent=labels[Math.min(Math.floor(raw*labels.length),labels.length-1)];
+    const p=Math.round(ease(raw)*100);
+    fillEl.style.width=p+'%';
+    pctEl.textContent=p+'%';
+    stEl.textContent=labels[Math.min(Math.floor(raw*labels.length),labels.length-1)];
     if(raw<1){requestAnimationFrame(tick)}
     else{
-      notice.classList.add('show');
-      setTimeout(()=>{
-        splash.classList.add('hide');
-        setTimeout(()=>{window.location.href=TARGET},900);
-      },400);
+      app.classList.add('show');
+      setTimeout(()=>{overlay.classList.add('hide');setTimeout(()=>overlay.remove(),1000)},300);
+      initCharts();
+      startLiveData();
     }
   }
   requestAnimationFrame(tick);
+})();
+
+/* ══ CLOCK ══ */
+let scanSec=0;
+function pad(n){return n<10?'0'+n:n}
+function clockTick(){
+  const d=new Date();
+  const el=document.getElementById('sb-time');
+  if(el) el.textContent=pad(d.getHours())+':'+pad(d.getMinutes())+':'+pad(d.getSeconds());
+  scanSec++;if(scanSec>99)scanSec=0;
+  const ls=document.getElementById('last-scan');
+  if(ls) ls.textContent=scanSec;
+}
+setInterval(clockTick,1000);
+
+/* ══ NAVIGATION ══ */
+function showPage(id,navEl){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  const pg=document.getElementById('page-'+id);
+  if(pg) pg.classList.add('active');
+  if(navEl){
+    document.querySelectorAll('.nav-item').forEach(i=>i.classList.remove('active'));
+    navEl.classList.add('active');
+  }
+  const titles={dashboard:'لوحة المراقبة',lives:'إحصاء الأرواح',twin:'التوأم الرقمي',
+    nose:'الأنف الرقمي',predict:'التحليل التنبؤي',history:'السجل التاريخي',
+    control:'الاستجابة الآلية',log:'سجل الأحداث',ai:'مساعد AI',
+    contacts:'جهات الاتصال الطارئة',report:'التقارير',settings:'الإعدادات'};
+  const pt=document.getElementById('page-title');
+  if(pt) pt.textContent=titles[id]||id;
+  if(id==='history') renderHistChart();
+}
+
+/* ══ TOAST ══ */
+function showToast(type,title,msg,dur=4000){
+  const icons={danger:'🚨',warn:'⚠️',info:'ℹ️',success:'✅'};
+  const c=document.getElementById('toast-container');
+  const t=document.createElement('div');
+  t.className='toast '+type;
+  t.innerHTML=`<span class="toast-icon">${icons[type]||'🔔'}</span><div class="toast-body"><div class="toast-title">${title}</div><div class="toast-msg">${msg}</div></div><span class="toast-close" onclick="this.parentElement.remove()">✕</span>`;
+  c.appendChild(t);
+  setTimeout(()=>{t.style.opacity='0';t.style.transition='opacity .4s';setTimeout(()=>t.remove(),400)},dur);
+}
+
+/* ══ ALERT STATE ══ */
+let alertOn=false,valveOpen=true,elecOn=true,currentMode='normal';
+
+function triggerAlert(){
+  if(alertOn){resetAlert();return}
+  alertOn=true;
+  document.getElementById('alert-bar').classList.add('show');
+  document.getElementById('sb-dot').className='status-dot danger';
+  document.getElementById('sb-label').className='status-label danger';
+  document.getElementById('sb-label').textContent='تحذير — خطر';
+  setVal('gas-v','18.4','danger');setBar('gas-b','84%','fill-danger');
+  document.getElementById('mc-gas').className='card metric-card danger';
+  setVal('smoke-v','120','warn');setBar('smoke-b','45%','fill-warn');
+  document.getElementById('mc-smoke').className='card metric-card warn';
+  setVal('co2-v','1840','danger');setBar('co2-b','75%','fill-danger');
+  document.getElementById('mc-co2').className='card metric-card danger';
+  setVal('co-v','12.5','danger');setBar('co-b','55%','fill-danger');
+  document.getElementById('mc-co').className='card metric-card danger';
+  document.getElementById('valve-val').textContent='مغلق';
+  document.getElementById('valve-val').className='s-val danger';
+  document.getElementById('valve-dot').className='s-dot danger';
+  document.getElementById('gas-smell').textContent='خطر';
+  document.getElementById('gas-smell').className='smell-badge sb-danger';
+  const sb=document.getElementById('sim-btn');
+  if(sb) sb.textContent='إعادة تعيين النظام';
+  // Show evac path
+  document.querySelectorAll('.evac-path').forEach(p=>p.classList.add('show'));
+  const el=document.getElementById('exit-label');
+  if(el) el.setAttribute('opacity','1');
+  const eb=document.getElementById('evac-badge');
+  if(eb) eb.style.display='';
+  showToast('danger','🚨 خطر — تسرب غاز!','تم إغلاق الصمام · شغّل نظام الإخلاء',8000);
+  setTimeout(()=>showToast('warn','إشعار دفاع مدني','تم إرسال تنبيه لرقم 999 تلقائياً'),1500);
+  document.getElementById('gas-trend').textContent='↑ ارتفاع حاد';
+}
+
+function resetAlert(){
+  alertOn=false;
+  document.getElementById('alert-bar').classList.remove('show');
+  document.getElementById('sb-dot').className='status-dot pulse';
+  document.getElementById('sb-label').className='status-label';
+  document.getElementById('sb-label').textContent='النظام آمن';
+  setVal('gas-v','0.3','safe');setBar('gas-b','3%','fill-safe');
+  document.getElementById('mc-gas').className='card metric-card';
+  setVal('smoke-v','0','safe');setBar('smoke-b','1%','fill-safe');
+  document.getElementById('mc-smoke').className='card metric-card';
+  setVal('co2-v','412','safe');setBar('co2-b','18%','fill-cyan');
+  document.getElementById('mc-co2').className='card metric-card';
+  setVal('co-v','0.2','safe');setBar('co-b','2%','fill-purple');
+  document.getElementById('mc-co').className='card metric-card';
+  document.getElementById('valve-val').textContent='مفتوح';
+  document.getElementById('valve-val').className='s-val safe';
+  document.getElementById('valve-dot').className='s-dot safe';
+  document.getElementById('gas-smell').textContent='آمن';
+  document.getElementById('gas-smell').className='smell-badge sb-safe';
+  const sb=document.getElementById('sim-btn');
+  if(sb) sb.textContent='محاكاة خطر — تسرب غاز';
+  document.querySelectorAll('.evac-path').forEach(p=>p.classList.remove('show'));
+  const el=document.getElementById('exit-label');
+  if(el) el.setAttribute('opacity','0');
+  const eb=document.getElementById('evac-badge');
+  if(eb) eb.style.display='none';
+  document.getElementById('gas-trend').textContent='↔ مستقر';
+  showToast('success','النظام آمن','تم إعادة تعيين جميع الحساسات');
+}
+
+function setVal(id,val,cls){
+  const el=document.getElementById(id);
+  if(el){el.textContent=val;el.className='m-val '+(cls||'')}
+}
+function setBar(id,w,cls){
+  const el=document.getElementById(id);
+  if(el){el.style.width=w;el.className='m-bar-fill '+(cls||'')}
+}
+
+function toggleValve(){
+  valveOpen=!valveOpen;
+  document.getElementById('vbtn').className='ctrl-btn '+(valveOpen?'active':'active-r');
+  document.getElementById('valve-val').textContent=valveOpen?'مفتوح':'مغلق (يدوي)';
+  document.getElementById('valve-dot').className='s-dot '+(valveOpen?'safe':'danger');
+  document.getElementById('valve-val').className='s-val '+(valveOpen?'safe':'danger');
+  showToast(valveOpen?'success':'warn','الصمام',valveOpen?'تم فتح الصمام يدوياً':'تم إغلاق الصمام يدوياً');
+}
+function toggleElec(){
+  elecOn=!elecOn;
+  document.getElementById('ebtn').className='ctrl-btn '+(elecOn?'':'active-r');
+  document.getElementById('elec-val').textContent=elecOn?'متصل':'مفصول (يدوي)';
+  document.getElementById('elec-dot').className='s-dot '+(elecOn?'safe':'danger');
+  document.getElementById('elec-val').className='s-val '+(elecOn?'safe':'danger');
+  showToast(elecOn?'success':'warn','الكهرباء',elecOn?'تم توصيل الكهرباء':'تم فصل الكهرباء');
+}
+
+function sendSOS(){
+  showToast('danger','🆘 استغاثة أُرسلت!','تم الاتصال بالدفاع المدني 999 · الإسعاف 9999',6000);
+}
+
+function callContact(num){
+  showToast('info','📞 اتصال','جارٍ الاتصال بـ '+num+'...');
+}
+
+/* ══ MODES ══ */
+function setMode(mode){
+  currentMode=mode;
+  ['normal','night','away','maintenance'].forEach(m=>{
+    document.getElementById('mode-'+m).classList.toggle('selected',m===mode);
+  });
+  const names={normal:'🏠 وضع عادي',night:'🌙 وضع ليلي',away:'✈️ وضع غياب',maintenance:'🔧 صيانة'};
+  document.getElementById('mode-indicator').textContent=names[mode];
+  const msgs={normal:'تم تفعيل الوضع العادي',night:'تنبيهات صوتية مُعطّلة',away:'الحساسية القصوى مُفعّلة',maintenance:'تنبيهات مُوقّتة مؤقتاً'};
+  showToast('info','وضع التشغيل',msgs[mode]);
+}
+
+/* ══ LOG FILTER ══ */
+function filterLog(type,btn){
+  document.querySelectorAll('.log-filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.log-entry').forEach(e=>{
+    e.style.display=(type==='all'||e.dataset.type===type)?'flex':'none';
+  });
+}
+
+/* ══ CHARTS ══ */
+let liveChart,histChart;
+
+function makeGradient(ctx,color){
+  try{
+    const g=ctx.createLinearGradient(0,0,0,140);
+    g.addColorStop(0,color+'44');
+    g.addColorStop(1,color+'00');
+    return g;
+  }catch(e){return color+'22'}
+}
+
+function initCharts(){
+  const ctx=document.getElementById('liveChart');
+  if(!ctx||!window.Chart) return;
+  const labels=Array.from({length:12},(_,i)=>((i*5)+'د'));
+  const gasData=[0.3,0.3,0.4,0.3,0.4,0.5,0.3,0.4,0.3,0.3,0.4,0.3];
+  const co2Data=[410,415,420,418,425,430,412,408,415,420,412,412];
+  const chartCtx=ctx.getContext('2d');
+  liveChart=new Chart(chartCtx,{
+    type:'line',
+    data:{
+      labels,
+      datasets:[
+        {label:'غاز% LEL',data:gasData,borderColor:'#e05252',backgroundColor:makeGradient(chartCtx,'#e05252'),borderWidth:1.5,pointRadius:2,tension:.4,yAxisID:'y'},
+        {label:'CO₂÷100',data:co2Data.map(v=>v/100),borderColor:'#00c8ff',backgroundColor:makeGradient(chartCtx,'#00c8ff'),borderWidth:1.5,pointRadius:2,tension:.4,yAxisID:'y'}
+      ]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:true,position:'top',labels:{color:'#8b93a8',font:{size:10},boxWidth:12,padding:8}}},
+      scales:{
+        x:{ticks:{color:'#4a5268',font:{size:9}},grid:{color:'#ffffff08'}},
+        y:{ticks:{color:'#4a5268',font:{size:9}},grid:{color:'#ffffff08'},min:0}
+      }
+    }
+  });
+}
+
+function renderHistChart(){
+  const ctx=document.getElementById('histChart');
+  if(!ctx||!window.Chart||histChart) return;
+  const hours=Array.from({length:24},(_,i)=>i+':00');
+  const chartCtx=ctx.getContext('2d');
+  histChart=new Chart(chartCtx,{
+    type:'line',
+    data:{
+      labels:hours,
+      datasets:[
+        {label:'غاز% LEL',data:[0.3,0.3,0.3,0.4,0.3,0.3,0.4,0.5,0.6,1.2,0.8,0.4,0.3,0.4,18.4,0.5,0.3,0.3,0.4,0.3,0.3,0.4,0.3,0.3],borderColor:'#e05252',borderWidth:1.5,pointRadius:2,tension:.4,fill:false},
+        {label:'CO₂ ppm÷100',data:[4.1,4.0,4.1,4.0,4.1,4.2,4.3,4.5,5.2,6.8,7.2,5.5,4.8,5.2,18.4,5.0,4.8,4.5,4.4,4.3,4.2,4.2,4.1,4.1],borderColor:'#00c8ff',borderWidth:1.5,pointRadius:2,tension:.4,fill:false},
+        {label:'حرارة°م',data:[23,23,23,22,22,22,23,23,24,25,26,27,27,28,29,28,27,26,25,25,24,24,23,23],borderColor:'#e09a2a',borderWidth:1.5,pointRadius:2,tension:.4,fill:false}
+      ]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:true,position:'top',labels:{color:'#8b93a8',font:{size:10},boxWidth:12,padding:8}}},
+      scales:{
+        x:{ticks:{color:'#4a5268',font:{size:9},maxTicksLimit:12},grid:{color:'#ffffff08'}},
+        y:{ticks:{color:'#4a5268',font:{size:9}},grid:{color:'#ffffff08'}}
+      }
+    }
+  });
+}
+
+/* ══ LIVE DATA SIMULATION ══ */
+function startLiveData(){
+  setInterval(()=>{
+    if(alertOn) return;
+    const gas=(0.2+Math.random()*0.3).toFixed(1);
+    const temp=(23+Math.random()*2).toFixed(0);
+    const hum=(40+Math.random()*5).toFixed(0);
+    const co2=(400+Math.random()*30).toFixed(0);
+    const el=id=>document.getElementById(id);
+    if(el('gas-v')) el('gas-v').textContent=gas;
+    if(el('temp-v')) el('temp-v').textContent=temp;
+    if(el('hum-v')) el('hum-v').textContent=hum;
+    if(el('co2-v')) el('co2-v').textContent=co2;
+    // update chart
+    if(liveChart&&liveChart.data){
+      liveChart.data.datasets[0].data.push(parseFloat(gas));
+      liveChart.data.datasets[0].data.shift();
+      liveChart.data.datasets[1].data.push(parseFloat(co2)/100);
+      liveChart.data.datasets[1].data.shift();
+      liveChart.update('none');
+    }
+  },3000);
+}
+
+/* ══ AI CHAT ══ */
+const aiResponses={
+  'غاز':'قراءة الغاز الحالية 0.3% LEL وهي آمنة جداً. الحد التحذيري هو 10% والخطر عند 25%. المنزل آمن تماماً.',
+  'co2':'قراءة CO₂ عند 412 ppm ضمن النطاق الطبيعي الخارجي (400-450 ppm). التهوية الجيدة تحافظ على هذا المستوى. قراءة فوق 1000 ppm تستدعي فتح النوافذ.',
+  'تسرب':'عند تسرب الغاز: 1) لا تُشعل أي مفتاح كهرباء 2) افتح النوافذ فوراً 3) أخرج الجميع من المنزل 4) اتصل بـ 999 من الخارج 5) لا تعد إلا بعد موافقة الدفاع المدني.',
+  'أطفال':'لحماية الأطفال: تأكد من أن الرادار يرصدهم في غرفتهم، فعّل التنبيهات الصوتية، ضع حساسات CO₂ في مستوى الأرض قرب منطقة نوم الأطفال.',
+  'default':'بناءً على القراءات الحالية، النظام في حالة آمنة تماماً. جميع الحساسات تعمل بدقة عالية. هل لديك سؤال محدد عن قراءة معينة أو إجراء سلامة؟'
+};
+
+function sendChat(){
+  const input=document.getElementById('chat-input');
+  const msg=input.value.trim();
+  if(!msg) return;
+  input.value='';
+  const messages=document.getElementById('chat-messages');
+  const userBubble=document.createElement('div');
+  userBubble.className='chat-bubble user';
+  userBubble.textContent=msg;
+  messages.appendChild(userBubble);
+  const typing=document.createElement('div');
+  typing.className='chat-bubble ai typing';
+  typing.textContent='يكتب...';
+  messages.appendChild(typing);
+  messages.scrollTop=messages.scrollHeight;
+  setTimeout(()=>{
+    typing.remove();
+    const aiBubble=document.createElement('div');
+    aiBubble.className='chat-bubble ai';
+    const key=Object.keys(aiResponses).find(k=>msg.includes(k))||'default';
+    aiBubble.textContent=aiResponses[key];
+    messages.appendChild(aiBubble);
+    messages.scrollTop=messages.scrollHeight;
+  },1200);
+}
+
+function quickAsk(q){
+  document.getElementById('chat-input').value=q;
+  sendChat();
+}
 </script>
 </body>
 </html>
